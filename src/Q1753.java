@@ -1,55 +1,70 @@
-import java.util.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
-//priorityQueue 배우고 다시 풀기
-class Edge {
-    public int end;
-    public int weight;
-
-    public Edge (int end, int weight) {
-        this.end = end;
-        this.weight = weight;
-    }
-}
 public class Q1753 {
+    public static int V; //정점 개수
+    public static int E; //간선 개수
+    public static int K; //시작 정점
     public static void main(String[] args) throws IOException {
-        /*
-        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder answer = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        StringTokenizer str1 = new StringTokenizer(bf.readLine());
+        StringTokenizer str = new StringTokenizer(br.readLine());
 
-        int num_v = Integer.parseInt(str1.nextToken());
-        int num_e = Integer.parseInt(str1.nextToken());
+        V = Integer.parseInt(str.nextToken());
+        E = Integer.parseInt(str.nextToken());
 
-        int start_vertex = Integer.parseInt(bf.readLine());
+        K = Integer.parseInt(br.readLine());
 
-        ArrayList<Edge>[] all = new ArrayList[num_v+1];
-        Boolean[] check = new Boolean[num_v+1];
-        int[] path = new int[num_v+1];
+        PriorityQueue<int[]> q = new PriorityQueue<>((a, b) -> a[0] - b[0]); //dist, node
+        int[] dist = new int[V + 1];
 
+        q.offer(new int[] {0, K});
 
-        for(int i = 0; i <= num_v; ++i) {
-            if(i == start_vertex) path[i] = 0;
-            path[i] = Integer.MAX_VALUE;
+        List<List<int[]>> list = new ArrayList<>();
+
+        for(int i = 0; i <= V; ++i){
+            list.add(new ArrayList<>());
+            dist[i] = Integer.MAX_VALUE;
+        }
+        dist[K] = 0;
+
+        for(int i = 0; i < E; ++i) {
+            //u, v, w
+            StringTokenizer str2 = new StringTokenizer(br.readLine());
+
+            int u = Integer.parseInt(str2.nextToken());
+            int v = Integer.parseInt(str2.nextToken());
+            int w = Integer.parseInt(str2.nextToken());
+
+            list.get(u).add(new int[] {v, w});
         }
 
-        for(int i = 0; i < num_e; ++i) {
-            StringTokenizer str = new StringTokenizer(bf.readLine());
+        while(!q.isEmpty()) {
+            int[] cur = q.poll(); //dist, node
+            int d = cur[0];
+            int n = cur[1];
 
-            int u = Integer.parseInt(str.nextToken());
-            int v = Integer.parseInt(str.nextToken());
-            int w = Integer.parseInt(str.nextToken());
+            if(d > dist[n]) continue;
 
-            all[u].add(new Edge(v, w));
+            for(int[] node : list.get(n)) {
+                //node, weight
+                if(dist[node[0]] > dist[n] + node[1]) {
+                    dist[node[0]] = dist[n] + node[1];
+                    q.offer(new int[] {dist[node[0]], node[0]});
+                }
+            }
         }
 
-         */
-        String x = "123450";
-        x = x.replaceFirst("1", "-");
-        x = x.replaceFirst("0", "-");
-        x = x.replaceFirst("0", "-");
-        System.out.println(x);
+        for(int i = 1; i <= V; ++i) {
+            bw.write((dist[i] == Integer.MAX_VALUE ? "INF" : dist[i]) + "\n");
+        }
+
+        bw.flush();
+        bw.close();
+        br.close();
     }
-
 }
